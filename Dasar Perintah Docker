@@ -1,0 +1,89 @@
+INSTALL Docker
+sudo apt install docker.io
+service docker start
+docker run hello-world
+
+PULL IMAGES
+Browsing google atau hub.docker.com
+docker pull nama_image
+
+SHOW CONTAINERS
+docker ps
+Buka daftar semua container aktif
+docker ps -a
+Semua container yg pernah dijalankan
+
+BUAT CONTAINER BARU
+docker run -dit -p 122:22 -p 180:80 --name portalweb --hostname portalweb nama_image
+
+MATIKAN DOCKER
+docker stop nama_app
+
+HAPUS CONTAINERS
+docker stop $(docker ps -a -q)
+docker rm -v $(docker ps -a -q)
+
+HAPUS VOLUMES
+docker volume rm $(docker volume ls -qf dangling=true)
+
+UBUNTU IN DOCKER
+docker pull ubuntu
+docker run -dit ubuntu:latest
+
+LOGIN KE DALAM CONTAINER
+docker attach nama_cont
+
+CREATE/UPDATE OWN IMAGE
+jalankan container ubuntu dan modifikasi sesuai selera, lalu exit
+docker commit -m "Pesan commit" -a "Riky Perdana" container_id rikyperdana/nama_image
+docker akan buat image baru sesuai isi container terakhir
+
+UPLOAD DOCKER
+docker login
+docker images
+docker push rikyperdana/nama_image
+
+MOUNT DOCKER VOLUME
+docker volume create --name mydata
+docker run -d -v mydata:/mydata ubuntu
+docker attach container_id
+ls /mydata
+
+INSTALL DOCKER COMPOSE
+sudo curl -o /usr/local/bin/docker-compose -L "https://github.com/docker/compose/releases/download/1.8.1/docker-compose-$(uname -s)-$(uname -m)"
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose -v
+
+BACKUP DOCKER IMAGES
+docker save -o ./nama_image.tar nama_image
+BACKUP DOCKER CONTAINER
+docker export -o ./nama_cont.tar nama_cont
+
+RESTORE DOCKER IMAGES
+docker import ./nama_cont.tar nama_cont
+RESTORE DOCKER CONTAINER
+docker load -i ./nama_image.tar
+
+RESOURCE LIMIT
+docker run -dit --c 1024 ubuntu:latest
+docker run -dit 300M ubuntu:latest
+
+DETACH CONTAINER
+Ctrl-P-Ctrl-Q
+
+PANTAU PROSES CONT BERJALAN
+docker top nama_cont
+
+CEK CONTAINER DISK USAGE
+docker ps -s
+
+UPDATE CONTAINER PORT MAP
+docker inspect nama_container, catat hash nya
+cd /var/lib/docker/containers/hash_nya
+nano hostconfig.json, ganti port mapping sesuai keinginan
+service docker restart, hidupkan lagi semua container
+*berlaku temporer, start ulang akan reset value
+*tidak bisa digunakan untuk tambah port
+
+IZINKAN TAMBAH PPA KE CONTAINER
+apt install software-properties-common
